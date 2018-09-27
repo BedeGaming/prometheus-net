@@ -2,20 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{0C02F049-E0A1-4F63-977C-CCC9C7531CF2}"
-	ProjectSection(SolutionItems) = preProject
-		History = History
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bede.Prometheus.Client", "Bede.Prometheus.Client\Bede.Prometheus.Client.csproj", "{27FD3988-E0A1-48C2-9A0A-C2AC0A1147BD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bede.Prometheus.Client_Tester.NetFramework", "Bede.Prometheus.Client_Tester.NetFramework\Bede.Prometheus.Client_Tester.NetFramework.csproj", "{7075E346-0DA8-4375-858D-F43BCBBC977A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bede.Prometheus.Client_Tests.NetFramework", "Bede.Prometheus.Client_Tests.NetFramework\Bede.Prometheus.Client_Tests.NetFramework.csproj", "{870D6190-625C-4B01-B0C3-65C256E05AA6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bede.Prometheus.Client_Benchmark.NetFramework", "Bede.Prometheus.Client_Benchmark.NetFramework\Bede.Prometheus.Client_Benchmark.NetFramework.csproj", "{20BC3A92-A1C1-4252-A857-F6CA2F9E49C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{33513B6D-36B7-4EDD-AE37-A5489ADF3D25}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,18 +20,6 @@ Global
 		{27FD3988-E0A1-48C2-9A0A-C2AC0A1147BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27FD3988-E0A1-48C2-9A0A-C2AC0A1147BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27FD3988-E0A1-48C2-9A0A-C2AC0A1147BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7075E346-0DA8-4375-858D-F43BCBBC977A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7075E346-0DA8-4375-858D-F43BCBBC977A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7075E346-0DA8-4375-858D-F43BCBBC977A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7075E346-0DA8-4375-858D-F43BCBBC977A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{870D6190-625C-4B01-B0C3-65C256E05AA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{870D6190-625C-4B01-B0C3-65C256E05AA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{870D6190-625C-4B01-B0C3-65C256E05AA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{870D6190-625C-4B01-B0C3-65C256E05AA6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20BC3A92-A1C1-4252-A857-F6CA2F9E49C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20BC3A92-A1C1-4252-A857-F6CA2F9E49C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20BC3A92-A1C1-4252-A857-F6CA2F9E49C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20BC3A92-A1C1-4252-A857-F6CA2F9E49C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

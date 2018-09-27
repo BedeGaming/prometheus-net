@@ -37,13 +37,15 @@ namespace Prometheus.Advanced
         public void RemoveLabelled(params string[] labelValues)
         {
             var key = new LabelValues(LabelNames, labelValues);
-            _labelledMetrics.TryRemove(key, out _);
+            TChild unused;
+            _labelledMetrics.TryRemove(key, out unused);
         }
 
         private TChild GetOrAddLabelled(LabelValues key)
         {
             tryagain:
-            if (_labelledMetrics.TryGetValue(key, out var existing))
+            TChild existing;
+            if (_labelledMetrics.TryGetValue(key, out existing))
                 return existing;
 
             var child = new TChild();

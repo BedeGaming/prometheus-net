@@ -2,6 +2,7 @@
 <package>
   <metadata>
     <id>Bede.Prometheus.Client</id>
+    <authors>Bede Gaming Limitted</authors>
     <description>.NET metrics exporter for the Prometheus monitoring and alerting system</description>
     <projectUrl>https://github.com/BedeGaming/Bede.Prometheus.Client</projectUrl>
 
