@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Bede.Prometheus.Client</id>
+    <description>.NET metrics exporter for the Prometheus monitoring and alerting system</description>
+    <projectUrl>https://github.com/BedeGaming/Bede.Prometheus.Client</projectUrl>
+
+    <!-- Automatically set by release automation. -->
+    <version>[build_version]</version>
+
+    <dependencies>
+      <dependency id="protobuf-net" version="2.3.4" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- The input directory structure is as it exists on the release agent, not as in the solution. -->
+    <file src="Bede.Prometheus.Client\bin\Release\Bede.Prometheus.Client.dll" target="lib\net461" />
+    <file src="Bede.Prometheus.Client\bin\Release\Bede.Prometheus.Client.pdb" target="lib\net461" />
+  </files>
+</package>

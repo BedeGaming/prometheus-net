@@ -1,5 +1,18 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+
+[assembly: AssemblyProduct("Bede Prometheus Client")]
+
+[assembly: AssemblyCompany("Bede Gaming Limitted")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+ [assembly: AssemblyConfiguration("Release")]
+#endif
 
 // This is the real version number, used in NuGet packages and for display purposes.
 [assembly: AssemblyFileVersion("1.0.0")]
