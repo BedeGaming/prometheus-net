@@ -219,8 +219,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Bede.Prometheus.Client_Resources\SolutionAssemblyInfo.cs">
-      <Link>Properties\SolutionAssemblyInfo.cs</Link>
+    <Compile Include="..\Bede.Prometheus.Client_SolutionItems\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\Tester.NetFramework\AlwaysFailingOnDemandCollector.cs">
       <Link>AlwaysFailingOnDemandCollector.cs</Link>
