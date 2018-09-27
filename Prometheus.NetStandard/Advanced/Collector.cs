@@ -43,7 +43,8 @@ namespace Prometheus.Advanced
         private TChild GetOrAddLabelled(LabelValues key)
         {
             tryagain:
-            if (_labelledMetrics.TryGetValue(key, out var existing))
+            TChild existing;
+            if (_labelledMetrics.TryGetValue(key, out existing))
                 return existing;
 
             var child = new TChild();
