@@ -15,7 +15,12 @@
   </metadata>
   <files>
     <!-- The input directory structure is as it exists on the release agent, not as in the solution. -->
-    <file src="Bede.Prometheus.Client\bin\Release\Bede.Prometheus.Client.dll" target="lib\net461" />
-    <file src="Bede.Prometheus.Client\bin\Release\Bede.Prometheus.Client.pdb" target="lib\net461" />
+
+    <file src="Bede.Prometheus.Client\net45\bin\Release\Bede.Prometheus.Client.dll" target="lib\net45" />
+    <file src="Bede.Prometheus.Client\net45\bin\Release\Bede.Prometheus.Client.pdb" target="lib\net45" />
+
+    <file src="Bede.Prometheus.Client\net461\bin\Release\Bede.Prometheus.Client.dll" target="lib\net461" />
+    <file src="Bede.Prometheus.Client\net461\bin\Release\Bede.Prometheus.Client.pdb" target="lib\net461" />
+
   </files>
 </package>
