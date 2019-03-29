@@ -5,58 +5,12 @@
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Bede Gaming Limitted</Authors>
-    <Description>.NET metrics exporter for the Prometheus monitoring and alerting system</Description>
+    <Description>.Net metrics exporter for the Prometheus monitoring and alerting system</Description>
     <PackageProjectUrl>https://github.com/BedeGaming/Bede.Prometheus.Client</PackageProjectUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\Prometheus.NetStandard\Advanced\Child.cs" Link="Advanced\Child.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\Collector.cs" Link="Advanced\Collector.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\DataContracts.cs" Link="Advanced\DataContracts.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\DefaultCollectorRegistry.cs" Link="Advanced\DefaultCollectorRegistry.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\DotNetStatsCollector.cs" Link="Advanced\DotNetStatsCollector.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\ICollector.cs" Link="Advanced\ICollector.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\ICollectorRegistry.cs" Link="Advanced\ICollectorRegistry.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\IOnDemandCollector.cs" Link="Advanced\IOnDemandCollector.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\MetricFactory.cs" Link="Advanced\MetricFactory.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\ScrapeFailedException.cs" Link="Advanced\ScrapeFailedException.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\ThreadSafeDouble.cs" Link="Advanced\ThreadSafeDouble.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Advanced\ThreadSafeLong.cs" Link="Advanced\ThreadSafeLong.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Counter.cs" Link="Counter.cs" />
-    <Compile Include="..\Prometheus.NetStandard\CounterConfiguration.cs" Link="CounterConfiguration.cs" />
-    <Compile Include="..\Prometheus.NetStandard\ExtensionsForMetrics.cs" Link="ExtensionsForMetrics.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Gauge.cs" Link="Gauge.cs" />
-    <Compile Include="..\Prometheus.NetStandard\GaugeConfiguration.cs" Link="GaugeConfiguration.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Histogram.cs" Link="Histogram.cs" />
-    <Compile Include="..\Prometheus.NetStandard\HistogramConfiguration.cs" Link="HistogramConfiguration.cs" />
-    <Compile Include="..\Prometheus.NetStandard\IMetricServer.cs" Link="IMetricServer.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Internal\AsciiFormatter.cs" Link="Internal\AsciiFormatter.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Internal\LabelValues.cs" Link="Internal\LabelValues.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Internal\ProtoFormatter.cs" Link="Internal\ProtoFormatter.cs" />
-    <Compile Include="..\Prometheus.NetStandard\MetricConfiguration.cs" Link="MetricConfiguration.cs" />
-    <Compile Include="..\Prometheus.NetStandard\MetricHandler.cs" Link="MetricHandler.cs" />
-    <Compile Include="..\Prometheus.NetStandard\MetricPusher.cs" Link="MetricPusher.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Metrics.cs" Link="Metrics.cs" />
-    <Compile Include="..\Prometheus.NetStandard\MetricServer.cs" Link="MetricServer.cs" />
-    <Compile Include="..\Prometheus.NetStandard\ScrapeHandler.cs" Link="ScrapeHandler.cs" />
-    <Compile Include="..\Prometheus.NetStandard\Summary.cs" Link="Summary.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryConfiguration.cs" Link="SummaryConfiguration.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\QuantileComparer.cs" Link="SummaryImpl\QuantileComparer.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\QuantileEpsilonPair.cs" Link="SummaryImpl\QuantileEpsilonPair.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\QuantileStream.cs" Link="SummaryImpl\QuantileStream.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\Sample.cs" Link="SummaryImpl\Sample.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\SampleBuffer.cs" Link="SummaryImpl\SampleBuffer.cs" />
-    <Compile Include="..\Prometheus.NetStandard\SummaryImpl\SampleStream.cs" Link="SummaryImpl\SampleStream.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="2.3.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Advanced\" />
-    <Folder Include="Internal\" />
-    <Folder Include="SummaryImpl\" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45'">
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
 </Project>
