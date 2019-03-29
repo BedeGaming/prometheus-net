@@ -67,15 +67,11 @@ namespace Prometheus
                                 continue;
                             }
 
-                            var acceptHeader = request.Headers.Get("Accept");
-                            var acceptHeaders = acceptHeader?.Split(',');
-                            var contentType = ScrapeHandler.GetContentType(acceptHeaders);
-                            response.ContentType = contentType;
-
                             response.StatusCode = 200;
+                            response.ContentType = ScrapeHandler.ContentType;
 
                             using (var outputStream = response.OutputStream)
-                                ScrapeHandler.ProcessScrapeRequest(metrics, contentType, outputStream);
+                                ScrapeHandler.ProcessScrapeRequest(metrics, outputStream);
                         }
                         catch (Exception ex) when (!(ex is OperationCanceledException))
                         {

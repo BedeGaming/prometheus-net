@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Prometheus.SummaryImpl
 {
-    class QuantileComparer : IComparer<Quantile>
+    class QuantileComparer : IComparer<QuantileValue>
     {
-        public int Compare(Quantile x, Quantile y)
+        public int Compare(QuantileValue x, QuantileValue y)
         {
-            return x.quantile.CompareTo(y.quantile);
+            return x.Quantile.CompareTo(y.Quantile);
         }
     }
 }

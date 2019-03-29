@@ -59,21 +59,21 @@ namespace Prometheus
 
             protected override void Populate(Metric metric)
             {
-                var wireMetric = new Advanced.DataContracts.Histogram();
-                wireMetric.sample_count = 0L;
+                var wireMetric = new Advanced.DataContracts.HistogramInfo();
+                wireMetric.SampleCount = 0L;
 
                 for (var i = 0; i < _bucketCounts.Length; i++)
                 {
-                    wireMetric.sample_count += (ulong)_bucketCounts[i].Value;
-                    wireMetric.bucket.Add(new Bucket
+                    wireMetric.SampleCount += (ulong)_bucketCounts[i].Value;
+                    wireMetric.Bucket.Add(new BucketInfo
                     {
-                        upper_bound = _upperBounds[i],
-                        cumulative_count = wireMetric.sample_count
+                        UpperBound = _upperBounds[i],
+                        CumulativeCount = wireMetric.SampleCount
                     });
                 }
-                wireMetric.sample_sum = _sum.Value;
+                wireMetric.SampleSum = _sum.Value;
 
-                metric.histogram = wireMetric;
+                metric.Histogram = wireMetric;
             }
 
             public void Observe(double val)

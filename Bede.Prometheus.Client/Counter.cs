@@ -28,8 +28,8 @@ namespace Prometheus
 
             protected override void Populate(Metric metric)
             {
-                metric.counter = new Advanced.DataContracts.Counter();
-                metric.counter.value = Value;
+                metric.Counter = new Advanced.DataContracts.CounterValue();
+                metric.Counter.Value = Value;
             }
 
             public void Inc(double increment = 1.0D)

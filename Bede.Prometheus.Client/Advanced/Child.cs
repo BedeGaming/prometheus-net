@@ -36,7 +36,7 @@ namespace Prometheus.Advanced
 
             var metric = new Metric
             {
-                label = _labelValues.WireLabels
+                Label = _labelValues.WireLabels
             };
 
             Populate(metric);

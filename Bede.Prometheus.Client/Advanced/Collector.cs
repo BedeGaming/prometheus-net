@@ -117,9 +117,9 @@ namespace Prometheus.Advanced
 
             var result = new MetricFamily()
             {
-                name = Name,
-                help = Help,
-                type = Type,
+                Name = Name,
+                Help = Help,
+                MetricType = Type,
             };
 
             foreach (var child in _labelledMetrics.Values)
@@ -129,7 +129,7 @@ namespace Prometheus.Advanced
                 if (metric == null)
                     continue; // This can occur due to initial value suppression.
 
-                result.metric.Add(metric);
+                result.Metric.Add(metric);
             }
 
             yield return result;

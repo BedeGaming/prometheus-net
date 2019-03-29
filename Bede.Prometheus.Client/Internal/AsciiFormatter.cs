@@ -32,17 +32,17 @@ namespace Prometheus.Internal
         {
             // # HELP familyname helptext
             writer.Write("# HELP ");
-            writer.Write(family.name);
+            writer.Write(family.Name);
             writer.Write(" ");
-            writer.WriteLine(family.help);
+            writer.WriteLine(family.Help);
 
             // # TYPE familyname type
             writer.Write("# TYPE ");
-            writer.Write(family.name);
+            writer.Write(family.Name);
             writer.Write(" ");
-            writer.WriteLine(family.type.ToString().ToLowerInvariant());
+            writer.WriteLine(family.MetricType.ToString().ToLowerInvariant());
 
-            foreach (var metric in family.metric)
+            foreach (var metric in family.Metric)
             {
                 WriteMetric(writer, family, metric);
             }
@@ -50,42 +50,42 @@ namespace Prometheus.Internal
 
         private static void WriteMetric(StreamWriter writer, MetricFamily family, Metric metric)
         {
-            var familyName = family.name;
+            var familyName = family.Name;
 
-            if (metric.gauge != null)
+            if (metric.Gauge != null)
             {
-                WriteMetricWithLabels(writer, familyName, null, metric.gauge.value, metric.label);
+                WriteMetricWithLabels(writer, familyName, null, metric.Gauge.Value, metric.Label);
             }
-            else if (metric.counter != null)
+            else if (metric.Counter != null)
             {
-                WriteMetricWithLabels(writer, familyName, null, metric.counter.value, metric.label);
+                WriteMetricWithLabels(writer, familyName, null, metric.Counter.Value, metric.Label);
             }
-            else if (metric.summary != null)
+            else if (metric.Summary != null)
             {
-                WriteMetricWithLabels(writer, familyName, "_sum", metric.summary.sample_sum, metric.label);
-                WriteMetricWithLabels(writer, familyName, "_count", metric.summary.sample_count, metric.label);
+                WriteMetricWithLabels(writer, familyName, "_sum", metric.Summary.SampleSum, metric.Label);
+                WriteMetricWithLabels(writer, familyName, "_count", metric.Summary.SampleCount, metric.Label);
 
-                foreach (var quantileValuePair in metric.summary.quantile)
+                foreach (var quantileValuePair in metric.Summary.Quantile)
                 {
-                    var quantile = double.IsPositiveInfinity(quantileValuePair.quantile) ? "+Inf" : quantileValuePair.quantile.ToString(CultureInfo.InvariantCulture);
+                    var quantile = double.IsPositiveInfinity(quantileValuePair.Quantile) ? "+Inf" : quantileValuePair.Quantile.ToString(CultureInfo.InvariantCulture);
 
-                    var quantileLabels = metric.label.Concat(new[] { new LabelPair { name = "quantile", value = quantile } });
+                    var quantileLabels = metric.Label.Concat(new[] { new LabelPair { Name = "quantile", Value = quantile } });
 
-                    WriteMetricWithLabels(writer, familyName, null, quantileValuePair.value, quantileLabels);
+                    WriteMetricWithLabels(writer, familyName, null, quantileValuePair.Value, quantileLabels);
                 }
             }
-            else if (metric.histogram != null)
+            else if (metric.Histogram != null)
             {
-                WriteMetricWithLabels(writer, familyName, "_sum", metric.histogram.sample_sum, metric.label);
-                WriteMetricWithLabels(writer, familyName, "_count", metric.histogram.sample_count, metric.label);
+                WriteMetricWithLabels(writer, familyName, "_sum", metric.Histogram.SampleSum, metric.Label);
+                WriteMetricWithLabels(writer, familyName, "_count", metric.Histogram.SampleCount, metric.Label);
 
-                foreach (var bucket in metric.histogram.bucket)
+                foreach (var bucket in metric.Histogram.Bucket)
                 {
-                    var value = double.IsPositiveInfinity(bucket.upper_bound) ? "+Inf" : bucket.upper_bound.ToString(CultureInfo.InvariantCulture);
+                    var value = double.IsPositiveInfinity(bucket.UpperBound) ? "+Inf" : bucket.UpperBound.ToString(CultureInfo.InvariantCulture);
 
-                    var bucketLabels = metric.label.Concat(new[] { new LabelPair { name = "le", value = value } });
+                    var bucketLabels = metric.Label.Concat(new[] { new LabelPair { Name = "le", Value = value } });
 
-                    WriteMetricWithLabels(writer, familyName, "_bucket", bucket.cumulative_count, bucketLabels);
+                    WriteMetricWithLabels(writer, familyName, "_bucket", bucket.CumulativeCount, bucketLabels);
                 }
             }
             else
@@ -114,11 +114,11 @@ namespace Prometheus.Internal
 
                     firstLabel = false;
 
-                    writer.Write(label.name);
+                    writer.Write(label.Name);
                     writer.Write("=\"");
 
                     // Have to escape the label values!
-                    writer.Write(EscapeLabelValue(label.value));
+                    writer.Write(EscapeLabelValue(label.Value));
 
                     writer.Write('"');
                 }

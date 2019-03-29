@@ -41,8 +41,8 @@ namespace Prometheus
 
             protected override void Populate(Metric metric)
             {
-                metric.gauge = new Advanced.DataContracts.Gauge();
-                metric.gauge.value = Value;
+                metric.Gauge = new Advanced.DataContracts.GaugeValue();
+                metric.Gauge.Value = Value;
             }
 
             public void Inc(double increment = 1)

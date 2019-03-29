@@ -121,7 +121,7 @@ namespace Prometheus
             // "github.com/bmizerany/perks/quantile").      
             int _bufCap;
 
-            Advanced.DataContracts.Summary _wireMetric;
+            Advanced.DataContracts.SummaryInfo _wireMetric;
 
             internal override void Init(ICollector parent, LabelValues labelValues, bool publish)
             {
@@ -159,13 +159,13 @@ namespace Prometheus
 
                 Array.Sort(_sortedObjectives);
 
-                _wireMetric = new Advanced.DataContracts.Summary();
+                _wireMetric = new Advanced.DataContracts.SummaryInfo();
 
                 for (var i = 0; i < _objectives.Count; i++)
                 {
-                    _wireMetric.quantile.Add(new Quantile
+                    _wireMetric.Quantile.Add(new QuantileValue
                     {
-                        quantile = _objectives[i].Quantile
+                        Quantile = _objectives[i].Quantile
                     });
                 }
             }
@@ -177,8 +177,8 @@ namespace Prometheus
 
             internal void Populate(Metric metric, DateTime now)
             {
-                var summary = new Advanced.DataContracts.Summary();
-                var quantiles = new Quantile[_objectives.Count];
+                var summary = new Advanced.DataContracts.SummaryInfo();
+                var quantiles = new QuantileValue[_objectives.Count];
 
                 lock (_bufLock)
                 {
@@ -187,18 +187,18 @@ namespace Prometheus
                         // Swap bufs even if hotBuf is empty to set new hotBufExpTime.
                         SwapBufs(now);
                         FlushColdBuf();
-                        summary.sample_count = _count;
-                        summary.sample_sum = _sum;
+                        summary.SampleCount = _count;
+                        summary.SampleSum = _sum;
 
                         for (var idx = 0; idx < _sortedObjectives.Length; idx++)
                         {
                             var rank = _sortedObjectives[idx];
                             var q = _headStream.Count == 0 ? double.NaN : _headStream.Query(rank);
 
-                            quantiles[idx] = new Quantile
+                            quantiles[idx] = new QuantileValue
                             {
-                                quantile = rank,
-                                value = q
+                                Quantile = rank,
+                                Value = q
                             };
                         }
                     }
@@ -209,10 +209,10 @@ namespace Prometheus
 
                 for (var i = 0; i < quantiles.Length; i++)
                 {
-                    summary.quantile.Add(quantiles[i]);
+                    summary.Quantile.Add(quantiles[i]);
                 }
 
-                metric.summary = summary;
+                metric.Summary = summary;
             }
 
             public void Observe(double val)

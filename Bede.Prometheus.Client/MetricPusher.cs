@@ -16,12 +16,6 @@ namespace Prometheus
     /// </summary>
     public class MetricPusher : MetricHandler
     {
-        /// <summary>
-        /// Used as input for the srape handler, so it generates the output in the expected format.
-        /// Not used in PushGateway communications.
-        /// </summary>
-        private const string ContentType = "text/plain; version=0.0.4";
-
         private readonly TimeSpan _pushInterval;
         private readonly Uri _targetUrl;
 
@@ -87,7 +81,7 @@ namespace Prometheus
                         var metrics = _registry.CollectAll();
 
                         var stream = new MemoryStream();
-                        ScrapeHandler.ProcessScrapeRequest(metrics, ContentType, stream);
+                        ScrapeHandler.ProcessScrapeRequest(metrics, stream);
 
                         stream.Position = 0;
                         // StreamContent takes ownership of the stream.

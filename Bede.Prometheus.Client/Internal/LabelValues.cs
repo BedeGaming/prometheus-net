@@ -65,7 +65,7 @@ namespace Prometheus.Internal
         private List<LabelPair> InitWireLabels()
         {
             return _names
-                .Zip(_values, (n, v) => new LabelPair { name = n, value = v })
+                .Zip(_values, (n, v) => new LabelPair { Name = n, Value = v })
                 .ToList();
         }
 
