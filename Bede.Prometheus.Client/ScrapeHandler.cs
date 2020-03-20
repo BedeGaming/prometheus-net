@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Prometheus.Internal;
 
 namespace Prometheus
@@ -8,11 +9,11 @@ namespace Prometheus
     {
         public static readonly string ContentType = "text/plain; version=0.0.4";
 
-        public static void ProcessScrapeRequest(
+        public static async Task ProcessScrapeRequestAsync(
             IEnumerable<Advanced.DataContracts.MetricFamily> collected,
             Stream outputStream)
         {
-            AsciiFormatter.Format(outputStream, collected);
+            await AsciiFormatter.FormatAsync(outputStream, collected).ConfigureAwait(false);
         }
     }
 }

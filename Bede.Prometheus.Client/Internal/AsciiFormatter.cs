@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Prometheus.Internal
 {
@@ -14,7 +15,7 @@ namespace Prometheus.Internal
         // pre-pended to the output stream.
         private static readonly Encoding Encoding = new UTF8Encoding(false);
 
-        public static void Format(Stream destination, IEnumerable<MetricFamily> metrics)
+        public static async Task FormatAsync(Stream destination, IEnumerable<MetricFamily> metrics)
         {
             // Leave stream open as we are just using it, not the owner of the stream!
             using (var writer = new StreamWriter(destination, Encoding, bufferSize: 1024, leaveOpen: true))
@@ -23,47 +24,51 @@ namespace Prometheus.Internal
 
                 foreach (var family in metrics)
                 {
-                    WriteFamily(writer, family);
+                    await WriteFamilyAsync(writer, family).ConfigureAwait(false);
                 }
             }
         }
 
-        private static void WriteFamily(StreamWriter writer, MetricFamily family)
+        private static async Task WriteFamilyAsync(StreamWriter writer, MetricFamily family)
         {
             // # HELP familyname helptext
-            writer.Write("# HELP ");
-            writer.Write(family.Name);
-            writer.Write(" ");
-            writer.WriteLine(family.Help);
+            await writer.WriteAsync("# HELP ").ConfigureAwait(false);
+            await writer.WriteAsync(family.Name).ConfigureAwait(false);
+            await writer.WriteAsync(" ").ConfigureAwait(false);
+            await writer.WriteLineAsync(family.Help).ConfigureAwait(false);
 
             // # TYPE familyname type
-            writer.Write("# TYPE ");
-            writer.Write(family.Name);
-            writer.Write(" ");
-            writer.WriteLine(family.MetricType.ToString().ToLowerInvariant());
+            await writer.WriteAsync("# TYPE ").ConfigureAwait(false);
+            await writer.WriteAsync(family.Name).ConfigureAwait(false);
+            await writer.WriteAsync(" ").ConfigureAwait(false);
+            await writer.WriteLineAsync(family.MetricType.ToString().ToLowerInvariant()).ConfigureAwait(false);
 
             foreach (var metric in family.Metric)
             {
-                WriteMetric(writer, family, metric);
+                await WriteMetricAsync(writer, family, metric).ConfigureAwait(false);
             }
         }
 
-        private static void WriteMetric(StreamWriter writer, MetricFamily family, Metric metric)
+        private static async Task WriteMetricAsync(StreamWriter writer, MetricFamily family, Metric metric)
         {
             var familyName = family.Name;
 
             if (metric.Gauge != null)
             {
-                WriteMetricWithLabels(writer, familyName, null, metric.Gauge.Value, metric.Label);
+                await WriteMetricWithLabelsAsync(writer, familyName, null, metric.Gauge.Value, metric.Label)
+                    .ConfigureAwait(false);
             }
             else if (metric.Counter != null)
             {
-                WriteMetricWithLabels(writer, familyName, null, metric.Counter.Value, metric.Label);
+                await WriteMetricWithLabelsAsync(writer, familyName, null, metric.Counter.Value, metric.Label)
+                    .ConfigureAwait(false);
             }
             else if (metric.Summary != null)
             {
-                WriteMetricWithLabels(writer, familyName, "_sum", metric.Summary.SampleSum, metric.Label);
-                WriteMetricWithLabels(writer, familyName, "_count", metric.Summary.SampleCount, metric.Label);
+                await WriteMetricWithLabelsAsync(writer, familyName, "_sum", metric.Summary.SampleSum, metric.Label)
+                    .ConfigureAwait(false);
+                await WriteMetricWithLabelsAsync(writer, familyName, "_count", metric.Summary.SampleCount, metric.Label)
+                    .ConfigureAwait(false);
 
                 foreach (var quantileValuePair in metric.Summary.Quantile)
                 {
@@ -71,21 +76,27 @@ namespace Prometheus.Internal
 
                     var quantileLabels = metric.Label.Concat(new[] { new LabelPair { Name = "quantile", Value = quantile } });
 
-                    WriteMetricWithLabels(writer, familyName, null, quantileValuePair.Value, quantileLabels);
+                    await WriteMetricWithLabelsAsync(writer, familyName, null, quantileValuePair.Value, quantileLabels)
+                        .ConfigureAwait(false);
                 }
             }
             else if (metric.Histogram != null)
             {
-                WriteMetricWithLabels(writer, familyName, "_sum", metric.Histogram.SampleSum, metric.Label);
-                WriteMetricWithLabels(writer, familyName, "_count", metric.Histogram.SampleCount, metric.Label);
+                await WriteMetricWithLabelsAsync(writer, familyName, "_sum", metric.Histogram.SampleSum, metric.Label)
+                    .ConfigureAwait(false);
+                await WriteMetricWithLabelsAsync(writer, familyName, "_count", metric.Histogram.SampleCount, metric.Label)
+                    .ConfigureAwait(false);
 
                 foreach (var bucket in metric.Histogram.Bucket)
                 {
-                    var value = double.IsPositiveInfinity(bucket.UpperBound) ? "+Inf" : bucket.UpperBound.ToString(CultureInfo.InvariantCulture);
+                    var value = double.IsPositiveInfinity(bucket.UpperBound)
+                        ? "+Inf"
+                        : bucket.UpperBound.ToString(CultureInfo.InvariantCulture);
 
                     var bucketLabels = metric.Label.Concat(new[] { new LabelPair { Name = "le", Value = value } });
 
-                    WriteMetricWithLabels(writer, familyName, "_bucket", bucket.CumulativeCount, bucketLabels);
+                    await WriteMetricWithLabelsAsync(writer, familyName, "_bucket", bucket.CumulativeCount, bucketLabels)
+                        .ConfigureAwait(false);
                 }
             }
             else
@@ -94,40 +105,45 @@ namespace Prometheus.Internal
             }
         }
 
-        private static void WriteMetricWithLabels(StreamWriter writer, string familyName, string postfix, double value, IEnumerable<LabelPair> labels)
+        private static async Task WriteMetricWithLabelsAsync(
+            StreamWriter writer,
+            string familyName,
+            string postfix,
+            double value,
+            IEnumerable<LabelPair> labels)
         {
             // familyname_postfix{labelkey1="labelvalue1",labelkey2="labelvalue2"} value
-            writer.Write(familyName);
+            await writer.WriteAsync(familyName).ConfigureAwait(false);
 
             if (postfix != null)
-                writer.Write(postfix);
+                await writer.WriteAsync(postfix).ConfigureAwait(false);
 
             if (labels?.Any() == true)
             {
-                writer.Write('{');
+                await writer.WriteAsync('{').ConfigureAwait(false);
 
                 bool firstLabel = true;
                 foreach (var label in labels)
                 {
                     if (!firstLabel)
-                        writer.Write(',');
+                        await writer.WriteAsync(',').ConfigureAwait(false);
 
                     firstLabel = false;
 
-                    writer.Write(label.Name);
-                    writer.Write("=\"");
+                    await writer.WriteAsync(label.Name).ConfigureAwait(false);
+                    await writer.WriteAsync("=\"").ConfigureAwait(false);
 
                     // Have to escape the label values!
-                    writer.Write(EscapeLabelValue(label.Value));
+                    await writer.WriteAsync(EscapeLabelValue(label.Value)).ConfigureAwait(false);
 
-                    writer.Write('"');
+                    await writer.WriteAsync('"').ConfigureAwait(false);
                 }
 
-                writer.Write('}');
+                await writer.WriteAsync('}').ConfigureAwait(false);
             }
 
-            writer.Write(' ');
-            writer.WriteLine(value.ToString(CultureInfo.InvariantCulture));
+            await writer.WriteAsync(' ').ConfigureAwait(false);
+            await writer.WriteLineAsync(value.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
         }
 
         private static string EscapeLabelValue(string value)
