@@ -1,6 +1,4 @@
-﻿using Prometheus.Advanced;
-using Prometheus.Advanced.DataContracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Prometheus.Advanced;
 
 namespace Prometheus
 {
@@ -81,11 +80,11 @@ namespace Prometheus
                         var metrics = _registry.CollectAll();
 
                         var stream = new MemoryStream();
-                        ScrapeHandler.ProcessScrapeRequest(metrics, stream);
+                        await ScrapeHandler.ProcessScrapeRequestAsync(metrics, stream).ConfigureAwait(false);
 
                         stream.Position = 0;
                         // StreamContent takes ownership of the stream.
-                        var response = await _httpClient.PostAsync(_targetUrl, new StreamContent(stream));
+                        var response = await _httpClient.PostAsync(_targetUrl, new StreamContent(stream)).ConfigureAwait(false);
 
                         // If anything goes wrong, we want to get at least an entry in the trace log.
                         response.EnsureSuccessStatusCode();
@@ -110,7 +109,7 @@ namespace Prometheus
                     {
                         try
                         {
-                            await Task.Delay(sleepTime, cancel);
+                            await Task.Delay(sleepTime, cancel).ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {

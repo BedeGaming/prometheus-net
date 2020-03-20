@@ -33,7 +33,7 @@ namespace Prometheus
             _httpListener.Start();
 
             // Kick off the actual processing to a new thread and return a Task for the processing thread.
-            return Task.Factory.StartNew(delegate
+            return Task.Factory.StartNew(async delegate
             {
                 try
                 {
@@ -61,7 +61,9 @@ namespace Prometheus
                                 if (!string.IsNullOrWhiteSpace(ex.Message))
                                 {
                                     using (var writer = new StreamWriter(response.OutputStream))
-                                        writer.Write(ex.Message);
+                                    {
+                                        await writer.WriteAsync(ex.Message).ConfigureAwait(false);
+                                    }
                                 }
 
                                 continue;
@@ -71,7 +73,10 @@ namespace Prometheus
                             response.ContentType = ScrapeHandler.ContentType;
 
                             using (var outputStream = response.OutputStream)
-                                ScrapeHandler.ProcessScrapeRequest(metrics, outputStream);
+                            {
+                                await ScrapeHandler.ProcessScrapeRequestAsync(metrics, outputStream)
+                                    .ConfigureAwait(false);
+                            }
                         }
                         catch (Exception ex) when (!(ex is OperationCanceledException))
                         {

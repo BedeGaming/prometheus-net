@@ -9,7 +9,7 @@ namespace Prometheus
     {
         public static readonly string ContentType = "text/plain; version=0.0.4";
 
-        public static async Task ProcessScrapeRequest(
+        public static async Task ProcessScrapeRequestAsync(
             IEnumerable<Advanced.DataContracts.MetricFamily> collected,
             Stream outputStream)
         {
