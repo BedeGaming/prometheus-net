@@ -7,18 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prometheus.Internal
+namespace Prometheus
 {
-    internal static class AsciiFormatter
+    public static class Serializer
     {
-        // Use UTF-8 encoding, but provide the flag to ensure the Unicode Byte Order Mark is never
-        // pre-pended to the output stream.
-        private static readonly Encoding Encoding = new UTF8Encoding(false);
-
-        public static async Task FormatAsync(Stream destination, IEnumerable<MetricFamily> metrics)
+        public static async Task SerializeAsync(StreamWriter writer, IEnumerable<MetricFamily> metrics)
         {
-            // Leave stream open as we are just using it, not the owner of the stream!
-            using (var writer = new StreamWriter(destination, Encoding, bufferSize: 1024, leaveOpen: true))
+            var newLine = writer.NewLine;
+
+            try
             {
                 writer.NewLine = "\n";
 
@@ -26,6 +23,10 @@ namespace Prometheus.Internal
                 {
                     await WriteFamilyAsync(writer, family).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                writer.NewLine = newLine;
             }
         }
 

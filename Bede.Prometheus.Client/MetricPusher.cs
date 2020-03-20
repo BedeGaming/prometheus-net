@@ -77,10 +77,11 @@ namespace Prometheus
 
                     try
                     {
-                        var metrics = _registry.CollectAll();
-
                         var stream = new MemoryStream();
-                        await ScrapeHandler.ProcessScrapeRequestAsync(metrics, stream).ConfigureAwait(false);
+                        using (var writer = _collector.CreateWriter(stream))
+                        {
+                            await _collector.WriteAsync(writer).ConfigureAwait(false);
+                        }
 
                         stream.Position = 0;
                         // StreamContent takes ownership of the stream.

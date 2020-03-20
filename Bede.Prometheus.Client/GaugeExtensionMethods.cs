@@ -2,7 +2,7 @@
 
 namespace Prometheus
 {
-    public static class ExtensionsForMetrics
+    public static class GaugeExtensionMethods
     {
         /// <summary>
         /// Enables you to easily report elapsed seconds in the value of a gauge.
