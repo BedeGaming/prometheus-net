@@ -14,6 +14,7 @@ namespace Prometheus
         // The registry that contains the collectors to export metrics from.
         // Subclasses are expected to use this variable to obtain the correct registry.
         protected readonly ICollectorRegistry _registry;
+        protected readonly IMetricsCollector _collector;
 
         // The token is cancelled when the handler is instructed to stop.
         private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -24,6 +25,7 @@ namespace Prometheus
         protected MetricHandler(ICollectorRegistry registry = null)
         {
             _registry = registry ?? DefaultCollectorRegistry.Instance;
+            _collector = new MetricsCollector(_registry);
         }
 
         public IMetricServer Start()

@@ -46,36 +46,23 @@ namespace Prometheus
                         var request = context.Request;
                         var response = context.Response;
 
+                        response.StatusCode = 200;
+                        response.ContentType = _collector.ContentType;
+
                         try
                         {
-                            IEnumerable<MetricFamily> metrics;
-
                             try
                             {
-                                metrics = _registry.CollectAll();
+                                using (var writer = _collector.CreateWriter(response.OutputStream))
+                                {
+                                    await _collector.WriteAsync(writer).ConfigureAwait(false);
+                                }
                             }
-                            catch (ScrapeFailedException ex)
+                            catch (ScrapeFailedException)
                             {
                                 response.StatusCode = 503;
 
-                                if (!string.IsNullOrWhiteSpace(ex.Message))
-                                {
-                                    using (var writer = new StreamWriter(response.OutputStream))
-                                    {
-                                        await writer.WriteAsync(ex.Message).ConfigureAwait(false);
-                                    }
-                                }
-
                                 continue;
-                            }
-
-                            response.StatusCode = 200;
-                            response.ContentType = ScrapeHandler.ContentType;
-
-                            using (var outputStream = response.OutputStream)
-                            {
-                                await ScrapeHandler.ProcessScrapeRequestAsync(metrics, outputStream)
-                                    .ConfigureAwait(false);
                             }
                         }
                         catch (Exception ex) when (!(ex is OperationCanceledException))
