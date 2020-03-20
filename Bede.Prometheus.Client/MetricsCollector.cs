@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Prometheus.Advanced;
+using Prometheus.Internal;
 
 namespace Prometheus
 {

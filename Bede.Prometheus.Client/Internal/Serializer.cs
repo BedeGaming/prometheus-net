@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Prometheus
+namespace Prometheus.Internal
 {
-    public static class Serializer
+    internal static class Serializer
     {
         public static async Task SerializeAsync(StreamWriter writer, IEnumerable<MetricFamily> metrics)
         {
