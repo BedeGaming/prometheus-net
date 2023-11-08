@@ -1,0 +1,92 @@
+version: "1.0"
+stages:
+  - setup
+  - build + test
+  - package + release
+
+steps:
+  clone:
+    title: Cloning repository
+    type: git-clone
+    repo: ${{CF_REPO_NAME}}
+    revision: ${{CF_BRANCH}}
+    git: github
+    stage: setup
+
+  bump_build_number:
+    title: Bump default build_number annotation
+    type: bump-build-number
+    stage: setup
+
+  increment_semver_pr:
+    title: Semantic Versioning (PR)
+    type: bedegaming/semantic-versioning
+    stage: setup
+    arguments:
+      WORKING_DIRECTORY: ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}
+      FAIL_ON_NO_SEMVER_TAG: false
+      RESET_BUILD_COUNTER_ON_NEW_SEMVER_TAG: false
+      BUILD_VERSION_SUFFIX: -rc
+      SET_VERSION_TO_LATEST: true
+
+  restore:
+    title: Restoring packages
+    stage: build + test
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    working_directory: ${{clone}}/src
+    commands:
+      - dotnet restore --configfile "nuget.config" ${{SOLUTION_NAME}}
+
+  build:
+    title: Building
+    stage: build + test
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    working_directory: ${{clone}}/src
+    commands:
+      - dotnet build --no-restore -c Release -p:Version=${{CF_BUILD_VERSION}} ${{SOLUTION_NAME}}
+
+  test:
+    title: Running tests
+    stage: build + test
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    working_directory: ${{clone}}/src
+    fail_fast: false
+    commands:
+      - dotnet test --no-build -c Release -p:Version=${{CF_BUILD_VERSION}} -l:trx --results-directory ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults /m:1 ${{SOLUTION_NAME}}
+    when:
+      condition:
+        all:
+          hasTests: '"${{HAS_TESTS}}" == "true"'
+
+  upload_test_results:
+    title: Upload Test Reports
+    image: codefresh/cf-docker-test-reporting
+    stage: build + test
+    working_directory: ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}
+    environment:
+      - ALLURE_DIR=${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults
+      - BUCKET_NAME=testresults
+      - CF_STORAGE_INTEGRATION=en1bdess02cfssa00
+    when:
+      condition:
+        all:
+          hasTests: '"${{HAS_TESTS}}" == "true"'
+
+  mark_test_status:
+    image: alpine:latest
+    title: Marking test status
+    stage: build + test
+    commands:
+      - echo "Unit tests failed"
+      - exit 1
+    when:
+      condition:
+        all:
+          myCondition: test.result == 'failure'
+
+  push_nupkgs:
+    title: Push nupkgs
+    stage: package + release
+    image: mcr.microsoft.com/dotnet/sdk:6.0
+    commands:
+      - dotnet nuget push ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/**/*.nupkg -k ${{secrets.codefresh-secrets.nexus-api-key}} -s http://repos.ad.bedegaming.com:8081/repository/nuget-components/
