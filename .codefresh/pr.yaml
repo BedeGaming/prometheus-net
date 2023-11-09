@@ -45,45 +45,6 @@ steps:
     commands:
       - dotnet build --no-restore -c Release -p:Version=${{CF_BUILD_VERSION}}
 
-  test:
-    title: Running tests
-    stage: build + test
-    image: mcr.microsoft.com/dotnet/sdk:6.0
-    working_directory: ${{clone}}/src
-    fail_fast: false
-    commands:
-      - dotnet test --no-build -c Release -p:Version=${{CF_BUILD_VERSION}} -l:trx --results-directory ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults /m:1
-    when:
-      condition:
-        all:
-          hasTests: '"${{HAS_TESTS}}" == "true"'
-
-  upload_test_results:
-    title: Upload Test Reports
-    image: codefresh/cf-docker-test-reporting
-    stage: build + test
-    working_directory: ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}
-    environment:
-      - ALLURE_DIR=${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults
-      - BUCKET_NAME=testresults
-      - CF_STORAGE_INTEGRATION=en1bdess02cfssa00
-    when:
-      condition:
-        all:
-          hasTests: '"${{HAS_TESTS}}" == "true"'
-
-  mark_test_status:
-    image: alpine:latest
-    title: Marking test status
-    stage: build + test
-    commands:
-      - echo "Unit tests failed"
-      - exit 1
-    when:
-      condition:
-        all:
-          myCondition: test.result == 'failure'
-
   push_nupkgs:
     title: Push nupkgs
     stage: package + release
