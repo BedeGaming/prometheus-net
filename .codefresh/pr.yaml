@@ -8,7 +8,7 @@ steps:
   clone:
     title: Cloning repository
     type: git-clone
-    repo: bedegaming/${{REPO_NAME}}
+    repo: BedeGaming/Bede.Prometheus.Client
     revision: ${{CF_BRANCH}}
     git: github
     stage: setup
@@ -35,7 +35,7 @@ steps:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     working_directory: ${{clone}}/src
     commands:
-      - dotnet restore --configfile "nuget.config" ${{SOLUTION_NAME}}
+      - dotnet restore --configfile "nuget.config"
 
   build:
     title: Building
@@ -43,7 +43,7 @@ steps:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     working_directory: ${{clone}}/src
     commands:
-      - dotnet build --no-restore -c Release -p:Version=${{CF_BUILD_VERSION}} ${{SOLUTION_NAME}}
+      - dotnet build --no-restore -c Release -p:Version=${{CF_BUILD_VERSION}}
 
   test:
     title: Running tests
@@ -52,7 +52,7 @@ steps:
     working_directory: ${{clone}}/src
     fail_fast: false
     commands:
-      - dotnet test --no-build -c Release -p:Version=${{CF_BUILD_VERSION}} -l:trx --results-directory ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults /m:1 ${{SOLUTION_NAME}}
+      - dotnet test --no-build -c Release -p:Version=${{CF_BUILD_VERSION}} -l:trx --results-directory ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}/testresults /m:1
     when:
       condition:
         all:
