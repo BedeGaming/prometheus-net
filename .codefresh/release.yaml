@@ -57,3 +57,4 @@ steps:
     commands:
       - cd ${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}
       - gh release create ${{CF_BUILD_VERSION}} --repo ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}} --title ${{CF_BUILD_VERSION}} --target ${{CF_REVISION}} --notes ""
+ 
